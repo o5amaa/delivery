@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMenuItemRequest;
 use App\Http\Requests\UpdateMenuItemRequest;
+use App\Http\Resources\MenuItemRS\MenuItemResource;
+use App\Http\Resources\MenuItemRS\MenuItemsResource;
 use App\Models\MenuItem;
 
 class MenuItemController extends Controller
@@ -16,7 +18,11 @@ class MenuItemController extends Controller
      */
     public function index()
     {
-        //
+        // dd('all');
+        // return CategoriesResource::collection(Category::all());
+
+        return MenuItemsResource::collection(MenuItem::all());
+
     }
 
 
@@ -40,10 +46,11 @@ class MenuItemController extends Controller
      */
     public function show(MenuItem $menuItem)
     {
-        //
+        // dd('one');
+        return new MenuItemResource($menuItem);
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -54,7 +61,7 @@ class MenuItemController extends Controller
      */
     public function update(UpdateMenuItemRequest $request, MenuItem $menuItem)
     {
-        //
+        return new MenuItemResource(tap($menuItem)->update($request->validated()));
     }
 
     /**
@@ -65,6 +72,11 @@ class MenuItemController extends Controller
      */
     public function destroy(MenuItem $menuItem)
     {
-        //
+        $info =  new MenuItemsResource($menuItem);
+        $menuItem->delete();
+        return response()->json(['message' => 'City Deleted', 'info' =>  $info], 200);
+
     }
 }
+
+
